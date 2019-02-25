@@ -25,48 +25,7 @@ public with sharing class FulfillmentStartDateService {
 	private Map<String, Boolean> configSettings = getConfigSettings();
 
 	
-	//move these into 1 sobject
-	/*
-	private boolean checkStartDateOverlapOnNew {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Start_Date_Overlap_On_New')); }
-	}
-
-	private boolean checkStartDateOverlapOnUpdate {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Start_Date_Overlap_On_Update')); }
-	}
-
-	private boolean checkStartDateForActive {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Start_Date_For_Active')); }
-	}
-
-	private boolean checkDatesForDrops {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Dates_For_Drops')); }
-	}
-
-	private boolean checkDatesForSuspended {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Dates_For_Suspended')); }
-	}
-
-	private boolean checkDatesForExpire {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Dates_For_Expire')); }
-	}
-
-	private boolean checkDatesForInvalidStatus {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Dates_For_Invalid_Status')); }
-	}
-
-	private boolean checkDatesForPendingActivation {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Dates_For_Pending_Activation')); }
-	}
-
-	private boolean checkDropDateForDrops {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Drop_Date_For_Drops')); }
-	}
-
-	private boolean checkDropDateWithEndDate {
-		get { return Boolean.valueOf(ConfigSetting.getValue('FLI_Check_Drop_Date_With_End_Date')); }
-	}
-	*/
+	
 
 	//start here: given service, newRecords, oldmapped data
 	public FulfillmentStartDateService(FLIDateValidation.IFLIStartDateAggregation service,
@@ -112,11 +71,7 @@ public with sharing class FulfillmentStartDateService {
 				
 			}
 			if (oFli != null) {
-				/*
-				if (hasStartDateOverlapOnUpdate(configSettings.get('FLI_Check_Start_Date_Overlap_On_Update'), fli, oFli)) {
-					validateStartDateOverlapOnUpdate.add(fli);
-				}
-				*/
+				
 				//has start date overlap on update
 				if(configSettings.get('FLI_Check_Start_Date_Overlap_On_Update') && fli.StartDate__c != oFli.StartDate__c && fli.Contract_Line_Item__c != null){
 					
@@ -124,11 +79,7 @@ public with sharing class FulfillmentStartDateService {
 
 				}
 
-				/*
-				if (hasStartDateForActive(checkStartDateForActive, fli, oFli)) {
-					validateStartDateForActive.add(fli);
-				}
-				*/
+				
 
 				//has start date active
 				if(configSettings.get('FLI_Check_Start_Date_For_Active')  && fli.Status__c == 'Active' && fli.StartDate__c != oFli.StartDate__c){
@@ -137,11 +88,7 @@ public with sharing class FulfillmentStartDateService {
 
 				}
 
-				/*
-				if (hasDatesForDrops(checkDatesForDrops, fli, oFli)) {
-					validateDatesForDrops.add(fli);
-				}
-				*/
+				
 
 				if(configSettings.get('FLI_Check_Dates_For_Drops') && (oFli.StartDate__c != fli.StartDate__c || (oFli.DropDate__c != fli.DropDate__c && oFli.DropDate__c != null && fli.DropDate__c != null) || oFli.Projected_End_Date__c != fli.Projected_End_Date__c) && (oFli.Status__c == 'Dropped' || oFli.Status__c == 'Drop Requested')){
 
@@ -149,22 +96,14 @@ public with sharing class FulfillmentStartDateService {
 
 				}
 
-				/*
-				if (hasDatesForSuspended(checkDatesForSuspended, fli, oFli)) {
-					validateDatesForSuspended.add(fli);
-				}
-				*/
+				
 				if(configSettings.get('FLI_Check_Dates_For_Suspended') && (oFli.StartDate__c != fli.StartDate__c || oFli.Suspension_Date__c != fli.Suspension_Date__c || oFli.Projected_End_Date__c != fli.Projected_End_Date__c) && (oFli.Status__c == 'Suspended')){
 
 					validateDatesForSuspended.add(fli);
 
 				}
 
-				/*
-				if (hasDatesForExpire(checkDatesForExpire, fli, oFli)) {
-					validateDatesForExpire.add(fli);
-				}
-				*/
+				
 
 				if(configSettings.get('FLI_Check_Dates_For_Expire') && (oFli.StartDate__c != fli.StartDate__c || oFli.Projected_End_Date__c != fli.Projected_End_Date__c) && (oFli.Status__c == 'Expire')){
 
@@ -172,22 +111,14 @@ public with sharing class FulfillmentStartDateService {
 
 				}
 
-				/*
-				if (hasDatesForInvalidStatus(checkDatesForInvalidStatus, fli, oFli)) {
-					validateDatesForInvalidStatus.add(fli);
-				}
-				*/
+				
 				if(configSettings.get('FLI_Check_Dates_For_Invalid_Status') && oFli.DropDate__c != fli.DropDate__c && fli.StartDate__c == null && oFli.Status__c == 'Invalid Status'){
 
 					validateDatesForInvalidStatus.add(fli);
 
 				}
 
-				/*
-				if (hascheckDatesForPendingActivation(checkDatesForPendingActivation, fli, oFli)) {
-					validateDatesForPendingActivation.add(fli);
-				}
-				*/
+				
 
 				if(configSettings.get('FLI_Check_Dates_For_Pending_Activation') && fli.Contract_Line_Item__c != null && oFli.StartDate__c != fli.StartDate__c && oFli.StartDate__c != null && fli.Status__c == 'Pending Activation'){
 
@@ -211,59 +142,7 @@ public with sharing class FulfillmentStartDateService {
 		}
 	}
 
-	/*
-	private static boolean hasStartDateOverlapOnUpdate(boolean configValue, Fulfillment_Line_Item__c newFli, Fulfillment_Line_Item__c oldFli) {
-		return(configValue && newFli.StartDate__c != oldFli.StartDate__c && newFli.Contract_Line_Item__c != null);
-	}
-	*/
-
-	/*
-	private static boolean hasStartDateForActive(boolean configValue, Fulfillment_Line_Item__c newFli, Fulfillment_Line_Item__c oldFli) {
-		return(configValue && oldFli.Status__c == 'Active' && newfli.StartDate__c != oldFli.StartDate__c);
-	}*/
-
-	/*
-	private static boolean hasDatesForDrops(boolean configValue, Fulfillment_Line_Item__c newFli, Fulfillment_Line_Item__c oldFli) {
-		return(configValue && (oldFli.StartDate__c != newFli.StartDate__c ||
-		(oldFli.DropDate__c != newFli.DropDate__c &&
-		 oldFli.DropDate__c != null && newFli.DropDate__c != null) ||
-		                       oldFli.Projected_End_Date__c != newFli.Projected_End_Date__c) &&
-		(oldFli.Status__c == 'Dropped' || oldFli.Status__c == 'Drop Requested'));
-	}
-	*/
-
-	/*
-	private static boolean hasDatesForSuspended(boolean configValue, Fulfillment_Line_Item__c newFli, Fulfillment_Line_Item__c oldFli) {
-		return(configValue && (oldFli.StartDate__c != newFli.StartDate__c ||
-		                       oldFli.Suspension_Date__c != newFli.Suspension_Date__c ||
-		                       oldFli.Projected_End_Date__c != newFli.Projected_End_Date__c) &&
-		(oldFli.Status__c == 'Suspended'));
-	}
-	*/
-
-	/*
-	private static boolean hasDatesForExpire(boolean configValue, Fulfillment_Line_Item__c newFli, Fulfillment_Line_Item__c oldFli) {
-		return(configValue && (oldFli.StartDate__c != newFli.StartDate__c ||
-		                       oldFli.Projected_End_Date__c != newFli.Projected_End_Date__c) &&
-		(oldFli.Status__c == 'Expire'));
-	}
-	*/
-
-
-	/*
-	private static boolean hasDatesForInvalidStatus(boolean configValue, Fulfillment_Line_Item__c newFli, Fulfillment_Line_Item__c oldFli) {
-		return(configValue && oldFli.DropDate__c != newFli.DropDate__c &&
-		       newFli.StartDate__c == null && oldFli.Status__c == 'Invalid Status');
-	}
-	*/
-
-	/*
-	private static boolean hascheckDatesForPendingActivation(boolean configValue, Fulfillment_Line_Item__c newFli, Fulfillment_Line_Item__c oldFli) {
-		return(configValue && newFli.Contract_Line_Item__c != null &&
-		       oldFli.StartDate__c != newFli.StartDate__c && oldFli.StartDate__c != null &&
-		       newFli.Status__c == 'Pending Activation');
-	}
-	*/
+	
 
 	//complicated- keep
 	private static boolean hasDropDateForDrop(boolean configValue, Fulfillment_Line_Item__c newFli, Fulfillment_Line_Item__c oldFli) {
