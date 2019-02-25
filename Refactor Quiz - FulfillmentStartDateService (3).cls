@@ -131,7 +131,7 @@ public with sharing class FulfillmentStartDateService {
 			this.flisToValidateStartDateOverlapOnNew = validateStartDateOverlapOnNew;
 			this.flisToValidateStartDateOverlapOnUpdate = validateStartDateOverlapOnUpdate;
 			this.flisToValidateStartDateForActive = validateStartDateForActive;
-			/this.flisToValidateDatesForDrops = validateDatesForDrops;
+			this.flisToValidateDatesForDrops = validateDatesForDrops;
 			this.flisToValidateDatesForSuspended = validateDatesForSuspended;
 			this.flisToValidateDatesForExpire = validateDatesForExpire;
 			this.flisToValidateDatesForInvalidStatus = validateDatesForInvalidStatus;
